@@ -31,6 +31,12 @@ app.use('/api/admin', adminRoutes);
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/health', (req, res) => res.json({ ok: true }));
+app.get('/api/config', (req, res) => {
+  res.json({
+    bkashNumber: process.env.MANUAL_BKASH_NUMBER || '',
+    nagadNumber: process.env.MANUAL_NAGAD_NUMBER || ''
+  });
+});
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`PDF store running on port ${PORT}`));

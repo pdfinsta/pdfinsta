@@ -19,7 +19,14 @@ function setMethod(m) {
   manualFields.style.display = m === 'manual' ? 'block' : 'none';
   submitBtn.textContent = m === 'online' ? 'Continue to payment' : 'Submit payment details';
 }
-
+async function loadConfig() {
+  try {
+    const res = await fetch('/api/config');
+    const cfg = await res.json();
+    document.getElementById('bkashNum').textContent = cfg.bkashNumber || 'Not set';
+    document.getElementById('nagadNum').textContent = cfg.nagadNumber || 'Not set';
+  } catch (err) {}
+}
 async function loadProduct() {
   if (!id) { showMsg('No product specified.', 'error'); return; }
   try {
@@ -89,3 +96,4 @@ document.getElementById('checkoutForm').addEventListener('submit', async (e) => 
 });
 
 loadProduct();
+loadConfig();
