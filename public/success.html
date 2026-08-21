@@ -5,6 +5,20 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Order status — PDF Insta</title>
 <link rel="stylesheet" href="/css/style.css">
+<style>
+.warn-box {
+  background: var(--wait-bg); border: 1px solid #F0D9A0; border-radius: 10px;
+  padding: 12px 16px; margin: 4px 0 20px; text-align: left; font-size: 0.88rem; color: #7A5A0C;
+}
+.warn-box strong { display: block; margin-bottom: 4px; }
+.copy-row { display: flex; align-items: center; justify-content: center; gap: 8px; margin: 8px 0 20px; }
+.copy-btn {
+  background: #fff; border: 1.5px solid var(--border); border-radius: var(--radius-pill);
+  padding: 6px 14px; font-size: 0.8rem; font-weight: 700; cursor: pointer; color: var(--primary);
+}
+.copy-btn:hover { background: var(--primary-soft); }
+.copy-btn.copied { background: var(--ok-bg); color: var(--ok-ink); border-color: var(--ok-bg); }
+</style>
 </head>
 <body>
 
@@ -34,28 +48,48 @@ async function load() {
     // We don't have the buyer's email in the URL for security, so show a generic confirmation
     // and point them to the tracking page (which requires order ID + email).
     card.innerHTML = `
-      <div class="status-icon wait">⏳</div>
-      <h2>Payment details received</h2>
-      <div class="order-id-tag">${orderId}</div>
-      <p style="color:var(--ink-soft)">We're verifying your bKash/Nagad transaction. This usually takes a little while.
-      Save your Order ID above — use it with your email on the tracking page to check status and get your download link.</p>
-      <a class="btn btn-outline" href="/track.html">Go to order tracking</a>
-    `;
+  <div class="status-icon wait">⏳</div>
+  <h2>Payment details received</h2>
+  <div class="order-id-tag">${orderId}</div>
+  <div class="copy-row">
+    <button class="copy-btn" onclick="copyOrderId(this)">📋 Copy Order ID</button>
+  </div>
+  <div class="warn-box">
+    <strong>⚠️ Please copy your Order ID</strong>
+    You'll need it (with your email) to check status and get your download link later. It will not be shown again.
+  </div>
+  <p style="color:var(--ink-soft)">We're verifying your bKash/Nagad transaction. This usually takes a little while.</p>
+  <a class="btn btn-outline" href="/track.html">Go to order tracking</a>
+`;
     return;
   }
 
   try {
     // For online payments we don't have the email either — send to tracking page with prefilled orderId.
     card.innerHTML = `
-      <div class="status-icon ok">✓</div>
-      <h2>Payment received</h2>
-      <div class="order-id-tag">${orderId}</div>
-      <p style="color:var(--ink-soft)">Enter the email you used at checkout to view your download link.</p>
-      <a class="btn btn-primary" href="/track.html?orderId=${orderId}">View my download link</a>
-    `;
+  <div class="status-icon ok">✓</div>
+  <h2>Payment received</h2>
+  <div class="order-id-tag">${orderId}</div>
+  <div class="copy-row">
+    <button class="copy-btn" onclick="copyOrderId(this)">📋 Copy Order ID</button>
+  </div>
+  <div class="warn-box">
+    <strong>⚠️ Please copy your Order ID</strong>
+    You'll need it (with your email) to view your download link later. It will not be shown again.
+  </div>
+  <p style="color:var(--ink-soft)">Enter the email you used at checkout to view your download link.</p>
+  <a class="btn btn-primary" href="/track.html?orderId=${orderId}">View my download link</a>
+`;
   } catch (err) {
     card.innerHTML = '<p>Something went wrong loading this order.</p>';
   }
+}
+function copyOrderId(btn) {
+  navigator.clipboard.writeText(orderId).then(() => {
+    btn.textContent = '✓ Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = '📋 Copy Order ID'; btn.classList.remove('copied'); }, 2000);
+  });
 }
 load();
 </script>
