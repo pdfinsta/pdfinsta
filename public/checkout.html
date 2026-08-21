@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Checkout — PDF Insta</title>
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a href="/" class="brand"><span class="leaf">📄</span> PDF Insta</a>
+    <nav><a class="nav-link" href="/track.html">Track order</a></nav>
+  </div>
+</header>
+
+<div class="wrap" style="max-width:640px; padding-top:40px; padding-bottom:60px;">
+  <h1 id="productTitle">Checkout</h1>
+  <p class="price-block" style="margin-top:0;">
+    <span class="amount" id="productPrice"></span>
+    <span class="label">one-time · BDT</span>
+  </p>
+
+  <div id="msgBox"></div>
+
+  <div class="panel">
+    <div class="method-toggle">
+      <button type="button" id="btnOnline" class="active">Pay online</button>
+      <button type="button" id="btnManual">bKash / Nagad (manual)</button>
+    </div>
+
+    <form id="checkoutForm">
+      <div class="field">
+        <label for="buyerName">Full name</label>
+        <input id="buyerName" name="buyerName" required>
+      </div>
+      <div class="field">
+        <label for="buyerEmail">Email <span style="font-weight:400;color:var(--ink-soft)">(you'll use this to track your order)</span></label>
+        <input id="buyerEmail" name="buyerEmail" type="email" required>
+      </div>
+      <div class="field">
+        <label for="buyerPhone">Phone number</label>
+        <input id="buyerPhone" name="buyerPhone" required>
+      </div>
+
+      <div id="manualFields" style="display:none;">
+        <div class="manual-info">
+          Send <strong>৳<span id="manualAmount"></span></strong> to one of these numbers, then fill in the transaction details below:<br>
+          bKash (Send Money): <span class="num" id="bkashNum">—</span><br>
+          Nagad (Send Money): <span class="num" id="nagadNum">—</span>
+        </div>
+        <div class="field">
+          <label for="manualMethod">Which did you use?</label>
+          <select id="manualMethod">
+            <option value="bKash">bKash</option>
+            <option value="Nagad">Nagad</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="manualSender">The number you sent from</label>
+          <input id="manualSender" placeholder="01XXXXXXXXX">
+        </div>
+        <div class="field">
+          <label for="manualTrxId">Transaction ID</label>
+          <input id="manualTrxId" placeholder="e.g. 9F2K7Q1A3B">
+          <div class="hint">Found in the payment confirmation SMS from bKash/Nagad.</div>
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-block" id="submitBtn">Continue to payment</button>
+    </form>
+  </div>
+</div>
+
+<footer class="footer">PDF Insta · PDFs delivered as instant download links after payment.</footer>
+
+<script src="/js/checkout.js"></script>
+</body>
+</html>

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Track your order — PDF Insta</title>
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a href="/" class="brand"><span class="leaf">📄</span> PDF Insta</a>
+    <nav><a class="nav-link" href="/">Browse catalog</a></nav>
+  </div>
+</header>
+
+<div class="wrap" style="max-width:520px; padding-top:50px; padding-bottom:60px;">
+  <h1>Track your order</h1>
+  <p style="color:var(--ink-soft)">Enter your Order ID and the email you used at checkout.</p>
+
+  <div class="panel">
+    <form id="trackForm">
+      <div class="field">
+        <label for="orderId">Order ID</label>
+        <input id="orderId" placeholder="PDF-A1B2C3" required>
+      </div>
+      <div class="field">
+        <label for="email">Email</label>
+        <input id="email" type="email" required>
+      </div>
+      <button class="btn btn-primary btn-block" type="submit">Check status</button>
+    </form>
+  </div>
+
+  <div id="result" style="margin-top:24px;"></div>
+</div>
+
+<footer class="footer">PDF Insta · PDFs delivered as instant download links after payment.</footer>
+
+<script>
+const params = new URLSearchParams(location.search);
+if (params.get('orderId')) document.getElementById('orderId').value = params.get('orderId');
+
+document.getElementById('trackForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const orderId = document.getElementById('orderId').value.trim();
+  const email = document.getElementById('email').value.trim();
+  const result = document.getElementById('result');
+  result.innerHTML = 'Checking…';
+
+  try {
+    const res = await fetch(`/api/orders/${encodeURIComponent(orderId)}?email=${encodeURIComponent(email)}`);
+    const data = await res.json();
+    if (!res.ok) { result.innerHTML = `<div class="msg error">${data.error}</div>`; return; }
+
+    const statusMap = {
+      paid: { icon: 'ok', label: 'Paid — unlocked' },
+      approved: { icon: 'ok', label: 'Approved — unlocked' },
+      pending: { icon: 'wait', label: 'Pending review' },
+      rejected: { icon: 'bad', label: 'Rejected' },
+      failed: { icon: 'bad', label: 'Payment failed' }
+    };
+    const s = statusMap[data.status] || { icon: 'wait', label: data.status };
+
+    result.innerHTML = `
+      <div class="panel status-card">
+        <div class="status-icon ${s.icon}">${s.icon === 'ok' ? '✓' : s.icon === 'bad' ? '✕' : '⏳'}</div>
+        <h2>${data.productTitle}</h2>
+        <div class="order-id-tag">${data.orderId}</div>
+        <p class="pill ${data.status}">${s.label}</p>
+        ${data.driveLink
+          ? `<p style="margin-top:18px;"><a class="btn btn-gold btn-block" href="${data.driveLink}" target="_blank" rel="noopener">Download your PDF</a></p>`
+          : `<p style="color:var(--ink-soft); margin-top:14px;">Your download link will appear here once payment is confirmed.</p>`}
+      </div>
+    `;
+  } catch (err) {
+    result.innerHTML = '<div class="msg error">Something went wrong. Please try again.</div>';
+  }
+});
+</script>
+</body>
+</html>

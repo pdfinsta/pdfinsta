@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin login — PDF Insta</title>
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<div class="wrap" style="max-width:400px; padding-top:80px;">
+  <h1 style="text-align:center;">Admin login</h1>
+  <div id="msgBox"></div>
+  <div class="panel">
+    <form id="loginForm">
+      <div class="field">
+        <label for="username">Username</label>
+        <input id="username" required autofocus>
+      </div>
+      <div class="field">
+        <label for="password">Password</label>
+        <input id="password" type="password" required>
+      </div>
+      <button class="btn btn-primary btn-block" type="submit">Log in</button>
+    </form>
+  </div>
+</div>
+
+<script>
+document.getElementById('loginForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const username = document.getElementById('username').value;
+  const password = document.getElementById('password').value;
+  const msgBox = document.getElementById('msgBox');
+  try {
+    const res = await fetch('/api/admin/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password })
+    });
+    const data = await res.json();
+    if (!res.ok) { msgBox.innerHTML = `<div class="msg error">${data.error}</div>`; return; }
+    window.location.href = '/admin/dashboard.html';
+  } catch (err) {
+    msgBox.innerHTML = '<div class="msg error">Could not log in. Try again.</div>';
+  }
+});
+</script>
+</body>
+</html>

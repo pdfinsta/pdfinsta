@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — PDF Insta</title>
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<div class="admin-shell">
+  <aside class="admin-side">
+    <div class="brand"><span class="leaf">📄</span> PDF Insta</div>
+    <button class="tab active" data-tab="products">📄 Products</button>
+    <button class="tab" data-tab="orders">🧾 Orders</button>
+    <button class="tab" id="logoutBtn" style="margin-top:30px; color:#E7B7A6;">↩ Log out</button>
+  </aside>
+
+  <main class="admin-main">
+    <section id="tab-products">
+      <div class="section-title" style="margin-top:0;">
+        <h2 style="margin:0;">Products</h2>
+        <button class="btn btn-primary" id="addProductBtn">+ Add product</button>
+      </div>
+      <div id="msgBox"></div>
+      <table id="productsTable">
+        <thead><tr><th>Cover</th><th>Title</th><th>Category</th><th>Price</th><th>Status</th><th></th></tr></thead>
+        <tbody><tr><td colspan="6">Loading…</td></tr></tbody>
+      </table>
+    </section>
+
+    <section id="tab-orders" style="display:none;">
+      <div class="section-title" style="margin-top:0;">
+        <h2 style="margin:0;">Orders</h2>
+      </div>
+      <table id="ordersTable">
+        <thead><tr><th>Order ID</th><th>Product</th><th>Buyer</th><th>Method</th><th>Amount</th><th>Status</th><th></th></tr></thead>
+        <tbody><tr><td colspan="7">Loading…</td></tr></tbody>
+      </table>
+    </section>
+  </main>
+</div>
+
+<!-- Product add/edit modal -->
+<div class="modal-backdrop" id="productModalBackdrop" style="display:none;">
+  <div class="modal">
+    <h2 id="modalTitle">Add product</h2>
+    <form id="productForm">
+      <input type="hidden" id="productId">
+      <div class="field">
+        <label for="title">Title</label>
+        <input id="title" required>
+      </div>
+      <div class="field">
+        <label for="description">Description</label>
+        <textarea id="description" required></textarea>
+      </div>
+      <div class="field">
+        <label for="price">Price (BDT)</label>
+        <input id="price" type="number" min="0" step="1" required>
+      </div>
+      <div class="field">
+        <label for="category">Category</label>
+        <input id="category" placeholder="e.g. Study Notes">
+      </div>
+      <div class="field">
+        <label for="pageCount">Page count (optional)</label>
+        <input id="pageCount" type="number" min="1" step="1">
+      </div>
+      <div class="field">
+        <label for="coverImage">Cover image URL</label>
+        <input id="coverImage" placeholder="https://..." required>
+        <div class="hint">A publicly reachable image link for the product card (e.g. an Imgur/Drive-shared image link).</div>
+      </div>
+      <div class="field">
+        <label for="driveLink">Google Drive download link</label>
+        <input id="driveLink" placeholder="https://drive.google.com/..." required>
+        <div class="hint">Only shown to buyers after payment is confirmed. Make sure sharing is set to "Anyone with the link".</div>
+      </div>
+      <div style="display:flex; gap:10px; margin-top:8px;">
+        <button type="button" class="btn btn-outline" id="cancelModalBtn" style="flex:1;">Cancel</button>
+        <button type="submit" class="btn btn-primary" style="flex:1;">Save</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Manual order review modal -->
+<div class="modal-backdrop" id="orderModalBackdrop" style="display:none;">
+  <div class="modal" id="orderModalBody"></div>
+</div>
+
+<script src="/js/admin.js"></script>
+</body>
+</html>

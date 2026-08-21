@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Order status — PDF Insta</title>
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a href="/" class="brand"><span class="leaf">📄</span> PDF Insta</a>
+    <nav><a class="nav-link" href="/track.html">Track order</a></nav>
+  </div>
+</header>
+
+<div class="wrap" style="max-width:560px; padding-top:50px;">
+  <div class="panel status-card" id="statusCard">Loading…</div>
+</div>
+
+<footer class="footer">PDF Insta · PDFs delivered as instant download links after payment.</footer>
+
+<script>
+const params = new URLSearchParams(location.search);
+const orderId = params.get('orderId');
+const isManual = params.get('manual') === '1';
+const card = document.getElementById('statusCard');
+
+async function load() {
+  if (!orderId) { card.innerHTML = '<p>No order specified.</p>'; return; }
+
+  if (isManual) {
+    // We don't have the buyer's email in the URL for security, so show a generic confirmation
+    // and point them to the tracking page (which requires order ID + email).
+    card.innerHTML = `
+      <div class="status-icon wait">⏳</div>
+      <h2>Payment details received</h2>
+      <div class="order-id-tag">${orderId}</div>
+      <p style="color:var(--ink-soft)">We're verifying your bKash/Nagad transaction. This usually takes a little while.
+      Save your Order ID above — use it with your email on the tracking page to check status and get your download link.</p>
+      <a class="btn btn-outline" href="/track.html">Go to order tracking</a>
+    `;
+    return;
+  }
+
+  try {
+    // For online payments we don't have the email either — send to tracking page with prefilled orderId.
+    card.innerHTML = `
+      <div class="status-icon ok">✓</div>
+      <h2>Payment received</h2>
+      <div class="order-id-tag">${orderId}</div>
+      <p style="color:var(--ink-soft)">Enter the email you used at checkout to view your download link.</p>
+      <a class="btn btn-primary" href="/track.html?orderId=${orderId}">View my download link</a>
+    `;
+  } catch (err) {
+    card.innerHTML = '<p>Something went wrong loading this order.</p>';
+  }
+}
+load();
+</script>
+</body>
+</html>
